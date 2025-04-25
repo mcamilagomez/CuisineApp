@@ -1,4 +1,4 @@
-# 🍳 Recetario App - React Native
+# 🍳 CuisineApp - React Native
 
 ¡Bienvenido a **Recetario App**! Una aplicación móvil desarrollada con **React Native** que permite a los amantes de la cocina **crear, descubrir y compartir recetas** fácilmente desde su dispositivo móvil. 🥗📱
 
