@@ -10,23 +10,26 @@ import {
   Platform,
   ScrollView
 } from "react-native";
-
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "@react-native-firebase/auth";
-import { initializeApp } from "firebase/app";
-import { fetchConfig } from "firebase/remote-config";
+import { verifyUser } from '../utils/userStorage';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
-    setIsLoading(true);
-    // Aquí iría tu lógica de autenticación
-    setTimeout(() => {
-      setIsLoading(false);
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Por favor ingresa tus credenciales');
+      return;
+    }
+
+    const isValidUser = await verifyUser(email, password);
+    
+    if (isValidUser) {
       navigation.navigate('MainTabs');
-    }, 1500);
+    } else {
+      Alert.alert('Error', 'Correo o contraseña incorrectos');
+    }
   };
 
   return (
@@ -72,12 +75,7 @@ const LoginScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.forgotPassword}
-            onPress={() => navigation.navigate('ForgotPassword')}
-          >
-            <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
-          </TouchableOpacity>
+
         </View>
 
         {/* Registro */}

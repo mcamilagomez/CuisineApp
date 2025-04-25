@@ -1,22 +1,76 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
+} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AddRecipeScreen = () => {
+const AddRecipeScreen = ({ navigation }) => {
   const [recipeName, setRecipeName] = useState('');
   const [recipeType, setRecipeType] = useState('entrada');
   const [ingredients, setIngredients] = useState('');
   const [instructions, setInstructions] = useState('');
 
-  const handleSubmit = () => {
-    console.log({
-      nombre: recipeName,
-      tipo: recipeType,
-      ingredientes: ingredients,
-      instrucciones: instructions
-    });
+  const saveRecipe = async (recipe) => {
+    try {
+      const recipesJSON = await AsyncStorage.getItem('userRecipes');
+      const recipes = recipesJSON ? JSON.parse(recipesJSON) : [];
+      recipes.push(recipe);
+      await AsyncStorage.setItem('userRecipes', JSON.stringify(recipes));
+      return { success: true, message: 'Receta guardada exitosamente' };
+    } catch (error) {
+      console.error('Error saving recipe:', error);
+      return { success: false, message: 'Error al guardar la receta' };
+    }
   };
+
+  const clearForm = () => {
+    setRecipeName('');
+    setRecipeType('entrada');
+    setIngredients('');
+    setInstructions('');
+  };
+
+// En handleSubmit de AddRecipeScreen.js
+// En handleSubmit de AddRecipeScreen.js
+const handleSubmit = async () => {
+  if (!recipeName || !recipeType || !ingredients || !instructions) {
+    Alert.alert('Error', 'Todos los campos son obligatorios');
+    return;
+  }
+
+  const userJSON = await AsyncStorage.getItem('loggedInUser');
+  const user = userJSON ? JSON.parse(userJSON) : null;
+  const author = user ? user.email : 'Desconocido';
+
+  const newRecipe = {
+    id: Date.now().toString(),
+    title: recipeName,
+    type: recipeType,
+    author,
+    ingredients,
+    instructions,
+    createdAt: new Date().toISOString(),
+    // sharedWith: null // No se incluye para recetas propias
+  };
+
+  const success = await saveRecipe(newRecipe);
+  if (success) {
+    clearForm();
+    navigation.navigate('MainTabs', { screen: 'MyRecipes' });
+  } else {
+    Alert.alert('Error', 'No se pudo guardar la receta');
+  }
+};
 
   return (
     <KeyboardAvoidingView
@@ -105,7 +159,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 25,
-    marginTop:25
+    marginTop: 25,
   },
   title: {
     fontSize: 24,

@@ -3,7 +3,6 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
 import AddScreen from "../screens/AddRecipeScreen";
-import ProfileScreen from "../screens/MyRecipesScreen";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -13,7 +12,7 @@ export default function Tabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: "#e91e63",
+        tabBarActiveTintColor: "#4CAF50",
         tabBarStyle: {
           backgroundColor: "#fff",
           height: 60,
@@ -31,7 +30,6 @@ export default function Tabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Add" component={AddScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }

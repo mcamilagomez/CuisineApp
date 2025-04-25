@@ -6,17 +6,71 @@ import {
   TouchableOpacity, 
   StyleSheet,
   KeyboardAvoidingView,
-  ScrollView
+  ScrollView,
+  Alert
 } from "react-native";
+import { saveUser, verifyUser, inspectUsers, viewBackupFile } from '../utils/userStorage';
 
-const RegisterScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+export default function RegisterScreen({ navigation }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleRegister = () => {
-    // Lógica de registro aquí
-    navigation.navigate('Home'); // Redirige después del registro
+  const handleRegister = async () => {
+    // Validaciones básicas
+    if (!email || !password || !confirmPassword) {
+      Alert.alert('Error', 'Todos los campos son obligatorios');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Las contraseñas no coinciden');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Error', 'La contraseña debe tener al menos 6 caracteres');
+      return;
+    }
+
+    try {
+      // Registrar usuario
+      console.log('Intentando registrar usuario:', { email });
+      const result = await saveUser({ email, password });
+      console.log('Resultado de saveUser:', result);
+
+      if (result.success) {
+        // Depuración (manejar errores para no detener el flujo)
+        console.log('Usuario registrado, inspeccionando datos...');
+        try {
+          await inspectUsers();
+          await viewBackupFile();
+        } catch (debugError) {
+          console.warn('Error en funciones de depuración:', debugError);
+        }
+
+        // Autenticar al usuario automáticamente
+        console.log('Intentando autenticar usuario...');
+        const isValidUser = await verifyUser(email, password);
+        console.log('Resultado de verifyUser:', isValidUser);
+
+        if (isValidUser) {
+          console.log('Autenticación exitosa, navegando a MainTabs...');
+          navigation.replace('MainTabs');
+        } else {
+          console.error('Fallo en autenticación automática');
+          Alert.alert('Error', 'No se pudo autenticar automáticamente. Por favor, inicia sesión manualmente.', [
+            { text: 'OK', onPress: () => navigation.navigate('Login') }
+          ]);
+        }
+      } else {
+        console.error('Error en registro:', result.message);
+        Alert.alert('Error', result.message);
+      }
+    } catch (error) {
+      console.error('Error en handleRegister:', error);
+      Alert.alert('Error', 'Ocurrió un error durante el registro');
+    }
   };
 
   return (
@@ -70,7 +124,7 @@ const RegisterScreen = ({ navigation }) => {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -121,5 +175,3 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 });
-
-export default RegisterScreen;
