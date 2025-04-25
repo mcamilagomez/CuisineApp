@@ -1,6 +1,6 @@
 # 🍳 CuisineApp - React Native
 
-¡Bienvenido a **Recetario App**! Una aplicación móvil desarrollada con **React Native** que permite a los amantes de la cocina **crear, descubrir y compartir recetas** fácilmente desde su dispositivo móvil. 🥗📱
+¡Bienvenido a **CuisineApp**! Una aplicación móvil desarrollada con **React Native** que permite a los amantes de la cocina **crear, descubrir y compartir recetas** fácilmente desde su dispositivo móvil. 🥗📱
 
 ---
 
@@ -16,13 +16,12 @@ Los usuarios pueden **crear nuevas recetas**, agregando información como:
 - Instrucciones paso a paso
 
 🔍 **Búsqueda de Recetas**  
-Búsqueda eficiente por **título** o **ingrediente**, para encontrar recetas rápidamente.
+Búsqueda eficiente por **título**, para encontrar recetas rápidamente.
 
 📄 **Detalle de Recetas**  
 Vista completa con todos los detalles de una receta, incluyendo:
 - Ingredientes
 - Preparación
-- Tiempo estimado
 
 🤝 **Compartir Recetas**  
 Comparte tus recetas favoritas con otros usuarios registrados dentro de la app.
